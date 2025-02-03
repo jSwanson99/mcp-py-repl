@@ -1,5 +1,6 @@
 import asyncio
 import io
+import os 
 import subprocess
 import re
 from contextlib import redirect_stdout, redirect_stderr
@@ -16,7 +17,7 @@ class PythonREPLServer:
         self.global_namespace = {
             "__builtins__": __builtins__,
         }
-        
+        print("IN THE PYTHON INIT")
         # Set up handlers using decorators
         @self.server.list_tools()
         async def handle_list_tools() -> list[types.Tool]:
@@ -25,6 +26,30 @@ class PythonREPLServer:
         @self.server.call_tool()
         async def handle_call_tool(name: str, arguments: dict | None) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
             return await self.handle_call_tool(name, arguments)
+
+        async def _handle_notification(self, notify: any):
+            # Call parent handler first
+            await super()._handle_notification(notify)
+
+            # Handle initialization
+            if isinstance(notify.root, types.InitializedNotification):
+                try:
+                    session = self.request_context.session
+                    roots_result = await session.list_roots()
+                    if roots_result and roots_result.roots:
+                        first_root = roots_result.roots[0]
+                        if first_root.startswith("file://"):
+                            path = first_root[7:]
+                        else:
+                            path = first_root
+                        
+                        try:
+                            os.chdir(path)
+                            print(f"Changed working directory to: {path}")
+                        except OSError as e:
+                            print(f"Failed to change directory to {path}: {e}")
+                except Exception as e:
+                    print(f"Error during initialization: {e}")
 
     async def handle_list_tools(self) -> list[types.Tool]:
         """List available tools"""
@@ -238,6 +263,7 @@ class PythonREPLServer:
                     ),
                 ),
             )
+
 
 async def main():
     server = PythonREPLServer()

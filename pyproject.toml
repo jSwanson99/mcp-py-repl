@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mcp-python"
-version = "0.1.3"
+version = "0.1.4"
 description = "MCP server providing a Python REPL with persistent session"
 requires-python = ">=3.10"
-dependencies = ["mcp"]
-authors = [{ name = "Tynan Daly", email = "tynan@hdr.is" }]
+dependencies = ["mcp>=1.2.1"]
+authors = [{ name = "Tynan Daly", email = "tynan@hdr.is" }, {name="evalstate"}]
 license = "MIT"
 keywords = ["mcp", "repl", "python", "server"]
 classifiers = [
@@ -21,10 +21,10 @@ classifiers = [
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://hdr.is"
-Repository = "https://github.com/hdresearch/mcp-python.git"
-Issues = "https://github.com/hdresearch/mcp-python/issues"
-Github = "https://github.com/hdresearch/mcp-python"
+Homepage = "https://llmindset.co.uk"
+Repository = "https://github.com/evalstate/mcp-python.git"
+Issues = "https://github.com/evalstate/mcp-python/issues"
+Github = "https://github.com/evalstate/mcp-python"
 
 [project.scripts]
 mcp-python = "mcp_python:main"
