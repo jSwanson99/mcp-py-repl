@@ -2,6 +2,7 @@ import io
 import os
 import subprocess
 import re
+import sys
 import traceback
 from contextlib import redirect_stdout, redirect_stderr
 from typing import  List
@@ -9,6 +10,7 @@ from typing import  List
 from mcp.server.fastmcp import FastMCP, Context
 import mcp.types as types
 
+# The Roots functionality in here is crude, awaiting for API support.
 # Initialize with settings
 mcp = FastMCP(
     "python-repl",
@@ -26,6 +28,8 @@ async def execute_python(ctx: Context, code: str, reset: bool = False) -> List[t
     """Execute Python code and return the output. Variables persist between executions."""
     global global_namespace
     
+    await set_working_dir_from_roots(ctx)  # Update directory if needed
+
     if reset:
         global_namespace.clear()
         global_namespace["__builtins__"] = __builtins__
@@ -63,6 +67,9 @@ async def execute_python(ctx: Context, code: str, reset: bool = False) -> List[t
 @mcp.tool()
 async def install_package(ctx: Context, package: str) -> List[types.TextContent]:
     """Install a Python package using uv"""
+
+    await set_working_dir_from_roots(ctx)  # Update directory if needed
+
     if not re.match("^[A-Za-z0-9][A-Za-z0-9._-]*$", package):
         return [types.TextContent(type="text", text=f"Invalid package name: {package}")]
     
@@ -101,25 +108,29 @@ async def list_variables(ctx: Context) -> List[types.TextContent]:
     var_list = "\n".join(f"{k} = {v}" for k, v in vars_dict.items())
     return [types.TextContent(type="text", text=f"Current session variables:\n\n{var_list}")]
 
-async def handle_initialized(ctx: Context):
-    """Handle initialization after connection is established"""
+async def set_working_dir_from_roots(ctx: Context) -> None:
+    """Get roots and set working directory to first root if available."""
     try:
-        # Subscribe to root changes if we're interested
-        ctx.info("Setting up root monitoring...")
-        
-        roots_result = await ctx.session.list_roots()
-        if roots_result and roots_result.roots:
-            first_root = roots_result.roots[0]
-            path = first_root[7:] if first_root.startswith("file://") else first_root
-            
-            try:
-                os.chdir(path)
-                ctx.info(f"Changed working directory to: {path}")
-            except OSError as e:
-                ctx.error(f"Failed to change directory to {path}: {e}")
-    except Exception as e:
-        ctx.error(f"Error during initialization: {e}")
+        # This explicitly uses list_roots() from the session
+        roots_result: types.ListRootsResult = await ctx.session.list_roots()
 
+        # Check the roots list exists and has items
+        if roots_result and hasattr(roots_result, 'roots') and roots_result.roots:
+            root = roots_result.roots[0]
+            # Convert the FileUrl to a string
+            uri_str = str(root.uri)            
+            if uri_str.startswith("file://"):
+                path = uri_str.replace("file://", "")
+                current_dir = os.getcwd()
+
+                if path != current_dir:
+                    try:
+                        os.chdir(path)
+                        print(f"Changed working directory to: {path}",file=sys.stderr)
+                    except OSError as e:
+                        print(f"Failed to change directory to {path}: {e}",file=sys.stderr)
+    except Exception as e:
+        print(f"Error handling roots: {str(e)}",file=sys.stderr)
 
 if __name__ == "__main__":
     mcp.run()
