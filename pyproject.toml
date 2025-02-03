@@ -7,7 +7,9 @@ name = "mcp-python"
 version = "0.1.4"
 description = "MCP server providing a Python REPL with persistent session"
 requires-python = ">=3.10"
-dependencies = ["mcp>=1.2.1"]
+dependencies = [
+    "mcp[cli]>=1.2.1",
+]
 authors = [{ name = "Tynan Daly", email = "tynan@hdr.is" }, {name="evalstate"}]
 license = "MIT"
 keywords = ["mcp", "repl", "python", "server"]
