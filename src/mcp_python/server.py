@@ -1,3 +1,4 @@
+import asyncio
 import io
 import os
 import subprocess
@@ -132,5 +133,9 @@ async def set_working_dir_from_roots(ctx: Context) -> None:
     except Exception as e:
         print(f"Error handling roots: {str(e)}",file=sys.stderr)
 
-if __name__ == "__main__":
+def main():
+    """Main entry point for the server."""
     mcp.run()
+
+if __name__ == "__main__":
+    main()
