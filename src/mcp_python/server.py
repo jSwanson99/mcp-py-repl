@@ -15,8 +15,7 @@ import mcp.types as types
 # Initialize with settings
 mcp = FastMCP(
     "python-repl",
-    debug=True,  # Enable debug mode
-    warn_on_duplicate_tools=True,  # Warn if we try to register duplicate tools
+    log_level="ERROR"
 )
 
 # Shared namespace for all executions
@@ -75,7 +74,7 @@ async def install_package(ctx: Context, package: str) -> List[types.TextContent]
         return [types.TextContent(type="text", text=f"Invalid package name: {package}")]
     
     try:
-        ctx.info(f"Installing package: {package}")
+        print(f"Installing package: {package}",file=sys.stderr)
         process = subprocess.run(
             ["uv", "pip", "install", package],
             capture_output=True,
@@ -122,12 +121,11 @@ async def set_working_dir_from_roots(ctx: Context) -> None:
             uri_str = str(root.uri)            
             if uri_str.startswith("file://"):
                 path = uri_str.replace("file://", "")
-                current_dir = os.getcwd()
-
+                path = os.path.normpath(path)
+                current_dir = os.path.normpath(os.getcwd())
                 if path != current_dir:
                     try:
                         os.chdir(path)
-                        print(f"Changed working directory to: {path}",file=sys.stderr)
                     except OSError as e:
                         print(f"Failed to change directory to {path}: {e}",file=sys.stderr)
     except Exception as e:
