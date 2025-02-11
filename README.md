@@ -1,37 +1,55 @@
-# Python REPL MCP Server
+# MCP Python REPL
 
-This MCP server provides a Python REPL (Read-Eval-Print Loop) as a tool. It allows execution of Python code through the MCP protocol with a persistent session.
+An MCP server providing a persistent Python REPL session.
 
-## Setup
+## Installation
 
-No setup needed! The project uses `uv` for dependency management.
+```bash
+pip install mcp-py-repl
+```
+
+## Usage
+
+```bash
+mcp-py-repl
+```
+
+## Using with Docker
+
+You can run the REPL server using Docker:
+
+```bash
+docker pull ghcr.io/evalstate/mcp-py-repl
+docker run -it ghcr.io/evalstate/mcp-py-repl
+```
+
+The container includes:
+- Python 3.12
+- UV package manager for fast dependency installation
+- Pre-configured environment for MCP
+
+## Features
+
+- Persistent Python session
+- Package installation via UV
+- Variable inspection
+- Directory awareness via MCP roots
 
 ## Running the Server
 
-Simply run:
+This server is intended to be used via Docker.
 
-```bash
-uv run src/python_repl/server.py
 ```
-
-## Usage with Claude Desktop
-
-Add this configuration to your Claude Desktop config file:
-
-```json
-{
-  "mcpServers": {
-    "python-repl": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "/absolute/path/to/python-repl-server",
-        "run",
-        "mcp_python"
-      ]
-    }
-  }
-}
+  args:
+    [
+      "run",
+      "-i",
+      "--rm",
+      "--pull=always",
+      "-v",
+      "./test_data:/mnt/data/",
+      "ghcr.io/evalstate/mcp-py-repl:latest",
+    ]
 ```
 
 The server provides three tools:

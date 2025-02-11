@@ -1,4 +1,3 @@
-import asyncio
 import io
 import os
 import subprocess
@@ -14,7 +13,7 @@ import mcp.types as types
 # The Roots functionality in here is crude, awaiting for API support.
 # Initialize with settings
 mcp = FastMCP(
-    "python-repl",
+    "mcp-py-repl",
     log_level="ERROR"
 )
 

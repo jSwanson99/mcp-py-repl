@@ -3,14 +3,17 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mcp-python"
+name = "mcp-py-repl"
 version = "0.1.4"
 description = "MCP server providing a Python REPL with persistent session"
 requires-python = ">=3.10"
 dependencies = [
     "mcp[cli]>=1.2.1",
+    "pandas",
+    "matplotlib",
+    "seaborn",
 ]
-authors = [{ name = "Tynan Daly", email = "tynan@hdr.is" }, {name="evalstate"}]
+authors = [{ name = "evalstate"}]
 license = "MIT"
 keywords = ["mcp", "repl", "python", "server"]
 classifiers = [
@@ -24,13 +27,16 @@ readme = "README.md"
 
 [project.urls]
 Homepage = "https://llmindset.co.uk"
-Repository = "https://github.com/evalstate/mcp-python.git"
-Issues = "https://github.com/evalstate/mcp-python/issues"
-Github = "https://github.com/evalstate/mcp-python"
+Repository = "https://github.com/evalstate/mcp-py-repl.git"
+Issues = "https://github.com/evalstate/mcp-py-repl/issues"
+Github = "https://github.com/evalstate/mcp-py-repl"
 
 [project.scripts]
-mcp-python = "mcp_python:main"
+mcp-py-repl = "mcp_py_repl:main"
 
-# Add this section to tell Hatch where to find the package files
 [tool.hatch.build.targets.wheel]
-packages = ["src/mcp_python"]
+packages = ["src/mcp_py_repl"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["mcp_py_repl"]

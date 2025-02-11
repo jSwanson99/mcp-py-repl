@@ -1,1 +1,1 @@
-docker buildx build   --builder=mcp-builder   --platform linux/amd64,linux/arm64   -t ghcr.io/evalstate/mcp-python   --push .
+docker buildx build --builder=mcp-builder --platform linux/amd64,linux/arm64 -t ghcr.io/evalstate/mcp-py-repl --push .
