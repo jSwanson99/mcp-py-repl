@@ -8,28 +8,14 @@ version = "0.1.4"
 description = "MCP server providing a Python REPL with persistent session"
 requires-python = ">=3.10"
 dependencies = [
-    "mcp[cli]>=1.2.1",
+    "fastmcp>=2.2.10",
     "pandas",
     "matplotlib",
     "seaborn",
-]
-authors = [{ name = "evalstate"}]
-license = "MIT"
-keywords = ["mcp", "repl", "python", "server"]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+		"asyncio",
+		"traceloop-sdk",
 ]
 readme = "README.md"
-
-[project.urls]
-Homepage = "https://llmindset.co.uk"
-Repository = "https://github.com/evalstate/mcp-py-repl.git"
-Issues = "https://github.com/evalstate/mcp-py-repl/issues"
-Github = "https://github.com/evalstate/mcp-py-repl"
 
 [project.scripts]
 mcp-py-repl = "mcp_py_repl:main"
